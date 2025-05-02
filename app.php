@@ -46,32 +46,38 @@
         
     </div>
     <!--Modal-->
-    <div class="modal" role ="dialog" tabindex="-1" id="form-add-alumno">
-        <div class="modal-dialog">
+    <div class="modal fade" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" id="form-add-alumno">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Crear un alumno</h5>
+                    <h5 class="modal-title">Crear un Alumno</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="myForm">
-                        <div class="col-12" mb-3>
-                            <label for="nombre" class="control-label">Nombre:</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="nombre" class="control-label">Nombre:</label>
+                                <input type="text" name="nombre" id="nombre" class="form-control">
+                            </div>
                         </div>
-                        <div class="col-12" mb-3>
-                            <label for="apellido_paterno" class="control-label">Apellido_paterno:</label>
-                            <input type="text" name="apellido_paterno" id="apellido_paterno" class="form-control">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="apellido_paterno" class="control-label">Apellido Paterno:</label>
+                                <input type="text" name="apellido_paterno" id="nombapellido_paternore" class="form-control">
+                            </div>
                         </div>
-                        <div class="col-12" mb-3>
-                            <label for="apellido_materno" class="control-label">Apellido_materno:</label>
-                            <input type="text" name="apellido_materno" id="apellido_materno" class="form-control">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="apellido_materno" class="control-label">Apellido Materno:</label>
+                                <input type="text" name="apellido_materno" id="apellido_materno" class="form-control">
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" onClick="crearAlumno()"><i class="fa-solid fa-floppy-disk"></i> Crear</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+                    <button type="button" class="btn btn-success" onClick="crearAlumno()"><i class="fa-solid fa-floppy-disk"></i> Crear</button>    
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa-solid fa-ban"></i> Cerrar</button>
                 </div>
             </div>
         </div>
@@ -110,29 +116,35 @@
                 }
             })
         }
-        function crearAlumno (){
+        
+        function crearAlumno() {
+            
+            if($("#nombre").val()=="") {alert("Por favor ingrese el Nombre");return false;}
+            if($("#apellido_paterno").val()=="") {alert("Por favor ingrese el Apellido Paterno");return false;}
+            if($("#apellido_materno").val()=="") {alert("Por favor ingrese el Apellido Materno");return false;}
+
             $.ajax({
-                type: "POST", 
+                type: "POST",
                 dataType: "json",
                 url: "operaciones.php",
-                data:"accion=insertar&"+$("#form-add-alumno").serialize(), 
-                cache:false, 
-                beforeSend: function (){
-                    $("form-add-alumno").modal("hide"); //Cierra el modal 
-                }, 
-                success: function (resultado){
-                   //
-                   if(resultado.status=="OK"){ //Si se creo bien el alumno se ejecuta esto: 
-                        buscar() 
-                   }
+                data: "accion=insertar&"+$("#myForm").serialize(),
+                cache: false,
+                beforeSend: function(){
+                    $("#form-add-alumno").modal("hide");
                 },
-                error: function (xhr, ajaxOptions, thrownError){
-                    alert(xhr.status); 
-                    alert(thrownError); 
-                }
-
-            }); 
+                success: function(resultado){
+                    if (resultado.status=="OK") {
+                        buscar()
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {alert (xhr.status); alert(thrownError);}
+            })
         }
+
+        $("#form-add-alumno").on("hidden.bs.modal", function(e) {
+            $("#myForm")[0].reset();
+        })
+
     </script>
 </body>
 </html>
